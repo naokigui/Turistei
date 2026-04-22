@@ -1,4 +1,4 @@
-import { Search, MapPin, User } from 'lucide-react';
+import { Search, MapPin, User, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface HeaderProps {
@@ -6,9 +6,10 @@ interface HeaderProps {
   onSearchChange: (query: string) => void;
   userName?: string | null;
   onLogin: () => void;
+  onLogout: () => void;
 }
 
-export default function Header({ searchQuery, onSearchChange, userName, onLogin }: HeaderProps) {
+export default function Header({ searchQuery, onSearchChange, userName, onLogin, onLogout }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-brand-bg/80 backdrop-blur-md border-b border-black/5">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
@@ -41,20 +42,36 @@ export default function Header({ searchQuery, onSearchChange, userName, onLogin 
         <div className="flex items-center gap-4">
           <AnimatePresence mode="wait">
             {userName ? (
-              <motion.div 
-                key="user"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex items-center gap-3 bg-white border border-black/5 px-4 py-1.5 rounded-full shadow-sm"
-              >
-                <div className="flex flex-col items-end">
-                  <span className="text-[10px] uppercase font-bold text-zinc-400">Olá,</span>
-                  <span className="text-xs font-bold text-brand-dark">{userName}</span>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center p-0.5 border-2 border-white overflow-hidden shadow-sm text-brand-primary">
-                  <User className="w-5 h-5" />
-                </div>
-              </motion.div>
+              <div className="flex items-center gap-2">
+                <motion.div 
+                  key="user"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex items-center gap-3 bg-white border border-black/5 px-4 py-1.5 rounded-full shadow-sm"
+                >
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] uppercase font-bold text-zinc-400">Olá,</span>
+                    <span className="text-xs font-bold text-brand-dark">{userName}</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center p-0.5 border-2 border-white overflow-hidden shadow-sm text-brand-primary">
+                    <User className="w-5 h-5" />
+                  </div>
+                </motion.div>
+                
+                <motion.button
+                  key="logout"
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  whileHover={{ scale: 1.05, backgroundColor: '#fee2e2', color: '#ef4444' }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  onClick={onLogout}
+                  className="w-10 h-10 rounded-full flex items-center justify-center bg-white border border-black/5 text-zinc-400 shadow-sm"
+                  title="Sair da conta"
+                >
+                  <LogOut className="w-4 h-4" />
+                </motion.button>
+              </div>
             ) : (
               <motion.button 
                 key="login"

@@ -21,6 +21,10 @@ export default function App() {
     setUser(name);
   };
 
+  const handleLogout = () => {
+    setUser(null);
+  };
+
   const toggleFavorite = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setFavorites(prev => 
@@ -49,6 +53,7 @@ export default function App() {
         onSearchChange={setSearchQuery} 
         userName={user}
         onLogin={() => setIsLoginOpen(true)}
+        onLogout={handleLogout}
       />
       <FilterBar active={activeFilter} onChange={setActiveFilter} />
 
@@ -181,11 +186,15 @@ export default function App() {
       />
 
       {/* Login Modal */}
-      <LoginModal 
-        isOpen={isLoginOpen} 
-        onClose={() => setIsLoginOpen(false)}
-        onLogin={handleLogin}
-      />
+      <AnimatePresence>
+        {isLoginOpen && (
+          <LoginModal 
+            isOpen={isLoginOpen} 
+            onClose={() => setIsLoginOpen(false)}
+            onLogin={handleLogin}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
