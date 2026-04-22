@@ -1,7 +1,14 @@
 import { Search, MapPin, User } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
-export default function Header() {
+interface HeaderProps {
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  userName?: string | null;
+  onLogin: () => void;
+}
+
+export default function Header({ searchQuery, onSearchChange, userName, onLogin }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-brand-bg/80 backdrop-blur-md border-b border-black/5">
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
@@ -23,6 +30,8 @@ export default function Header() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 w-4 h-4" />
             <input 
               type="text" 
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Onde vamos hoje? (Bairro, rua ou vibe...)"
               className="w-full bg-white border border-black/10 rounded-full py-2.5 pl-11 pr-4 focus:ring-2 focus:ring-brand-primary/20 outline-none text-sm shadow-sm transition-all"
             />
@@ -30,13 +39,38 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-12 h-12 rounded-full bg-zinc-200 p-0.5 border-2 border-white overflow-hidden"
-          >
-            <div className="w-full h-full bg-brand-primary" />
-          </motion.button>
+          <AnimatePresence mode="wait">
+            {userName ? (
+              <motion.div 
+                key="user"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-center gap-3 bg-white border border-black/5 px-4 py-1.5 rounded-full shadow-sm"
+              >
+                <div className="flex flex-col items-end">
+                  <span className="text-[10px] uppercase font-bold text-zinc-400">Olá,</span>
+                  <span className="text-xs font-bold text-brand-dark">{userName}</span>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center p-0.5 border-2 border-white overflow-hidden shadow-sm text-brand-primary">
+                  <User className="w-5 h-5" />
+                </div>
+              </motion.div>
+            ) : (
+              <motion.button 
+                key="login"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onLogin}
+                className="bg-brand-dark text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-black/10 hover:bg-brand-primary hover:text-brand-dark transition-all flex items-center gap-2"
+              >
+                <User className="w-4 h-4" />
+                Entrar
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </header>

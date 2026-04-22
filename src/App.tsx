@@ -3,15 +3,23 @@ import Header from './components/Header';
 import FilterBar from './components/FilterBar';
 import PlaceCard from './components/PlaceCard';
 import PlaceDetails from './components/PlaceDetails';
+import LoginModal from './components/LoginModal';
 import { PLACES } from './data';
 import { CategoryFilter, Place } from './types';
 import { motion, AnimatePresence } from 'motion/react';
-import { Info, Sparkles } from 'lucide-react';
+import { Info, Sparkles, User as UserIcon } from 'lucide-react';
 
 export default function App() {
   const [activeFilter, setActiveFilter] = useState<CategoryFilter>('all');
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [user, setUser] = useState<string | null>(null);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+  const handleLogin = (name: string) => {
+    setUser(name);
+  };
 
   const toggleFavorite = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -22,15 +30,26 @@ export default function App() {
 
   const filteredPlaces = useMemo(() => {
     return PLACES.filter(place => {
-      if (activeFilter === 'all') return true;
-      if (activeFilter === '0800') return place.priceLevel === 0;
-      return place.category === activeFilter;
+      const matchesCategory = activeFilter === 'all' 
+        || (activeFilter === '0800' ? place.priceLevel === 0 : place.category === activeFilter);
+      
+      const searchLower = searchQuery.toLowerCase();
+      const matchesSearch = place.name.toLowerCase().includes(searchLower)
+        || place.address.toLowerCase().includes(searchLower)
+        || place.description.toLowerCase().includes(searchLower);
+
+      return matchesCategory && matchesSearch;
     });
-  }, [activeFilter]);
+  }, [activeFilter, searchQuery]);
 
   return (
     <div className="min-h-screen pb-20">
-      <Header />
+      <Header 
+        searchQuery={searchQuery} 
+        onSearchChange={setSearchQuery} 
+        userName={user}
+        onLogin={() => setIsLoginOpen(true)}
+      />
       <FilterBar active={activeFilter} onChange={setActiveFilter} />
 
       <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-12 gap-8">
@@ -119,13 +138,20 @@ export default function App() {
           </div>
 
           {/* Profile Card */}
-          <div className="card bg-[#ecece2] p-6 border-none flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-bold opacity-50 tracking-widest">Seu Perfil</span>
-              <span className="text-base font-serif font-bold text-brand-dark">Explorador Nível 4</span>
+          <div className="card bg-[#ecece2] p-6 border-none flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center bg-white shrink-0 border border-black/5 text-brand-primary">
+              <UserIcon className="w-6 h-6" />
             </div>
-            <div className="h-2 w-24 bg-white rounded-full overflow-hidden">
-              <div className="h-full bg-brand-primary" style={{ width: '60%' }} />
+            <div className="flex flex-col flex-1">
+              <span className="text-[10px] uppercase font-bold opacity-50 tracking-widest leading-none mb-1">
+                {user ? 'Conectado como' : 'Seu Perfil'}
+              </span>
+              <span className="text-base font-serif font-bold text-brand-dark leading-tight">
+                {user || 'Visitante'}
+              </span>
+              <div className="mt-2 h-1 w-full bg-white/50 rounded-full overflow-hidden">
+                <div className="h-full bg-brand-primary" style={{ width: user ? '85%' : '20%' }} />
+              </div>
             </div>
           </div>
           
@@ -152,6 +178,13 @@ export default function App() {
       <PlaceDetails 
         place={selectedPlace} 
         onClose={() => setSelectedPlace(null)} 
+      />
+
+      {/* Login Modal */}
+      <LoginModal 
+        isOpen={isLoginOpen} 
+        onClose={() => setIsLoginOpen(false)}
+        onLogin={handleLogin}
       />
     </div>
   );
