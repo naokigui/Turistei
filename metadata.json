@@ -1,0 +1,6 @@
+{
+  "name": "Turistei",
+  "description": "Plataforma de turismo hiperlocal que conecta moradores a experiências autênticas e rolês 0800.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["Hyperlocal Discovery", "Real-time Occupancy", "Budget-friendly Filtering"]
+}

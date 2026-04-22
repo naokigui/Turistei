@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Helvetica Neue", "Arial", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Georgia", ui-serif, serif;
+
+  --color-brand-primary: #5A5A40; /* Olive */
+  --color-brand-secondary: #FF6321; /* Warm Orange */
+  --color-brand-dark: #2D2D20; /* Deep Ink */
+  --color-brand-bg: #f5f5f0; /* Warm Off-White */
+}
+
+@layer base {
+  body {
+    @apply bg-brand-bg text-brand-dark font-sans antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif font-bold tracking-tight;
+  }
+}
+
+.card {
+  @apply bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-black/5 overflow-hidden;
+}
+
+.badge-free {
+  @apply bg-brand-primary text-white px-3 py-1 rounded-full text-[11px] uppercase tracking-wider font-medium;
+}
+
+.status-dot {
+  @apply w-2 h-2 rounded-full inline-block;
+}
+
+.status-green { @apply bg-[#4CAF50] shadow-[0_0_8px_rgba(76,175,80,0.4)]; }
+.status-orange { @apply bg-[#FF9800] shadow-[0_0_8px_rgba(255,152,0,0.4)]; }
+.status-red { @apply bg-[#F44336] shadow-[0_0_8px_rgba(244,67,54,0.4)]; }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
